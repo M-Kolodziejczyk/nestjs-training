@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  backend:
+    container_name: backend-trainig
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/src/app
+      - /user/src/app/node_modules
+    ports:
+      - 8080:8080
+    command: npm run start:dev
