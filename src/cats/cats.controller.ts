@@ -12,15 +12,17 @@ import {
   UsePipes,
   DefaultValuePipe,
   ParseBoolPipe,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CatsService } from './cats.service';
-import { CreateCatDto, catsSchema } from './dto/create-cat.dto';
+import { CreateCatDto, catsSchema, FindOneParams } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
 import { JoiValidationPipe } from './validation/objectSchemaValidation';
 import { ClassValidationPipe } from './validation/classValidatorPipe';
 import { CustomParseIntPipe } from './validation/parse-int.pipe';
 
 @Controller('cats')
+@UsePipes(new ValidationPipe({ whitelist: true }))
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
@@ -31,8 +33,15 @@ export class CatsController {
   //   return this.catsService.create(createCatDto);
   // }
 
+  // Class validator pipe
+  // @Post()
+  // async create(@Body(new ClassValidationPipe()) createCatDto: CreateCatDto) {
+  //   return this.catsService.create(createCatDto);
+  // }
+
   @Post()
-  async create(@Body(new ClassValidationPipe()) createCatDto: CreateCatDto) {
+  async create(@Body() createCatDto: CreateCatDto) {
+    console.log('CReated', createCatDto);
     return this.catsService.create(createCatDto);
   }
 
@@ -55,9 +64,23 @@ export class CatsController {
   // }
 
   // Custom ParseIntPipe
+  // @Get(':id')
+  // async findOne(@Param('id', new CustomParseIntPipe()) id: number) {
+  //   console.log('Typeof ID', typeof id);
+  //   return this.catsService.findOne(+id);
+  // }
+
+  // Class Validator
+  // @Get(':id')
+  // async findOne(@Param() id: FindOneParams) {
+  //   console.log('PArams', id);
+  //   return this.catsService.findOne(+id);
+  // }
+
   @Get(':id')
-  async findOne(@Param('id', new CustomParseIntPipe()) id: number) {
-    console.log('Typeof ID', typeof id);
+  async findOne(@Param() id: FindOneParams) {
+    console.log('PArams', id);
+    console.log('Typeof: ', typeof id.id);
     return this.catsService.findOne(+id);
   }
 
